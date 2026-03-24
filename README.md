@@ -1,53 +1,47 @@
 ## Project Title
 
-Give your project a short, clear title (e.g., "Side Quest Week 1: Interactive Shape Switcher").
+Side Quest Week 9: Fox's Forest Debug Edition
 
 ---
 
-## Group Number (only for group work)
+## Author
 
-List your group number.
+Lynette Shen
 
 ---
 
 ## Description
 
-Briefly describe what your project does.  
-Explain what the user will see, how they can interact, and what inspired the design.
-
-Example:
-
-> This project lets users switch between shapes using keyboard inputs.  
-> It explores how visual feedback can communicate accessibility states.
+This project is a p5play platformer game built on top of Week 9 Example 03, with an added debug menu for development testing. The player controls a fox character who moves through a forest level, jumping on platforms and avoiding enemies. On top of the base game, I added a debug menu that lets you toggle moon gravity and player invincibility on and off during gameplay, which makes it easier to test mechanics without having to restart. The debug menu was inspired by the Example 01 slides which showed how useful real-time toggles are during game development.
 
 ---
 
 ## Interaction Instructions
 
-Describe how to use or play your project.
+- The game starts automatically when the page loads.
+- Press any key or click to unlock audio (browser requirement).
+- WASD or Arrow Keys — move the player.
+- Space or Up — jump.
+- Backtick `` ` `` — open/close the debug menu.
 
-- How does the user start?
-- What controls or keys do they use?
-- Any important visual or audio feedback to watch for?
+While the debug menu is open:
+- Press M — toggle moon gravity on/off.
+- Press I — toggle invincible mode on/off.
 
-Example:
-
-> Press `S` to switch shapes and `R` to reset the canvas.
+Watch for the yellow ON/grey OFF indicators in the menu to confirm which toggles are active.
 
 ---
 
 ## Assets
 
-List any images, sounds, or other files used in your assets/ folder.
-Include in-text citations for all assets that are not your own, and connect them to your reference list.
-
-Example:
-
-> - `assets/sound/beep.mp3` (created in GarageBand)
-> - `assets/image/background.png` (original artwork)
+assets/sfx/jump.wav (provided in Week 9 Example 03 course materials)
+assets/sfx/music.wav (provided in Week 9 Example 03 course materials)
+All sprite sheets and background images provided in Week 9 Example 03 course materials
 
 ## References
 
-Connect your in-text citations to the reference list along with additional sources that informed your design but were not directly cited. Provide all citations using the ACM reference format.
+[1] Cochrane, K. and Han, D. 2026. GBDA302 Week 9 Code: Building a Game Using p5play. University of Waterloo, Faculty of Arts.
+[2] p5play. 2023. p5play: Game Library for p5.js. https://p5play.org
+[3] McCarthy, L. et al. 2023. p5.js Reference. Processing Foundation. https://p5js.org/reference
 
 ---
