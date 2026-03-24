@@ -104,6 +104,61 @@
           "winScoreLabel": "RESCUED %d/%d"
         }
       }
+    },
+    {
+      "id": "ffa_level2",
+      "name": "Fox's Forest Adventure - Level 2",
+
+      "tiles": {
+        "tileW": 24,
+        "tileH": 24,
+        "frameW": 32,
+        "frameH": 32
+      },
+
+      "tilemap": [
+        "     b    x        b     x     b      x",
+        "    LgR  LgggR  b     LgR        LgggR ",
+        "  b         b  LgR   b     x  b        ",
+        "  LgR   LggR     b     LgR      LgR  b ",
+        "       b      LgR  b      LgggR     x  ",
+        "  LggR   x  b     LgR  b         LgR   ",
+        "      x LgR   LggR      x  LgR  b      ",
+        " b LgR        b   LgR  LgR      LggR   ",
+        "        LgR b     b      x  b       x  ",
+        " s LgR b   LggR x  LgR  b    x  LgR   ",
+        "  x [d]  LgR x  [d]  x  LgR  b  x ff  ",
+        "LgggRffLggggggRfffLgggg]fffgfLgggggggggg",
+        "dddddddddddddddddddddddddddddddddddddddd"
+      ],
+
+      "rules": {},
+
+      "winScore": 20,
+      "gravity": 10,
+      "fallResetMarginTiles": 3,
+
+      "backupPlayerStart": { "x": 32, "y": 216 },
+
+      "view": {
+        "w": 240,
+        "h": 192,
+        "background": [45, 35, 65],
+        "cameraLerp": 0.1,
+
+        "parallax": [
+          { "img": "assets/background_layer_1.png", "speed": 0.3 },
+          { "img": "assets/background_layer_2.png", "speed": 0.5 },
+          { "img": "assets/background_layer_3.png", "speed": 0.7 }
+        ]
+      },
+
+      "overrides": {
+        "hud": {
+          "rescueLabel": "RESCUED",
+          "winScoreLabel": "RESCUED %d/%d"
+        }
+      }
     }
   ]
 }

@@ -43,6 +43,7 @@ export class WinScreen {
     blink = 0,
     lastRank = null,
     winScreenState = "default",
+    hasNextLevel = false,
   } = {}) {
     const viewW = this.pkg.view?.viewW ?? this.pkg.view?.w ?? 240;
     const viewH = this.pkg.view?.viewH ?? this.pkg.view?.h ?? 192;
@@ -65,18 +66,29 @@ export class WinScreen {
       y += 28;
       this._drawOutlined(window, msg2, x2, y, "#ffdc00");
       y += 28;
-      let prompt1, prompt2;
+      let prompt1, prompt2, prompt3;
       if (lastRank !== null) {
         prompt1 = "Press E to enter initials";
       } else {
         prompt1 = "Press V to view high scores";
       }
-      prompt2 = "Press R to restart";
+      if (hasNextLevel) {
+        prompt2 = "Press N for Level 2";
+        prompt3 = "Press R to restart";
+      } else {
+        prompt2 = "Press R to restart";
+        prompt3 = null;
+      }
       const xP1 = Math.round((viewW - prompt1.length * this.GLYPH_W) / 2);
       const xP2 = Math.round((viewW - prompt2.length * this.GLYPH_W) / 2);
       this._drawOutlined(window, prompt1, xP1, y, "#ffffff");
       y += 22;
-      this._drawOutlined(window, prompt2, xP2, y, "#ffffff");
+      this._drawOutlined(window, prompt2, xP2, y, hasNextLevel ? "#00ff7a" : "#ffffff");
+      if (prompt3) {
+        y += 18;
+        const xP3 = Math.round((viewW - prompt3.length * this.GLYPH_W) / 2);
+        this._drawOutlined(window, prompt3, xP3, y, "#ffffff");
+      }
     } else if (winScreenState === "enter-initials") {
       let y = 10;
       const header = "HIGH SCORES:";

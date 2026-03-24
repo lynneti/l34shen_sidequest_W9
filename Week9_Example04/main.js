@@ -148,6 +148,10 @@ const TUNING_URL = new URL("./data/tuning.json", window.location.href).href;
 // Level ids in levels.json
 const TITLE_LEVEL_ID = "title_screen";
 const GAME_LEVEL_ID = "ffa_level1";
+const GAME_LEVEL_ID_2 = "ffa_level2";
+
+// Track which gameplay level is active (null = not yet in gameplay)
+let activeLevelId = null;
 
 // Fade-in state for level 1 transition
 let fadeInAlpha = 0;
@@ -319,7 +323,7 @@ function initRuntime() {
 // Build the gameplay level (called when title screen is dismissed)
 // ------------------------------------------------------------
 
-async function buildGameLevel() {
+async function buildGameLevel(levelId = GAME_LEVEL_ID) {
   // Defensive cleanup: ensure no title sprites/state leak into gameplay.
   for (const s of [...allSprites]) {
     s.joints?.removeAll?.();
@@ -336,7 +340,8 @@ async function buildGameLevel() {
   }
 
   // Load the gameplay level package
-  levelPkg = await loader.load(LEVELS_URL, GAME_LEVEL_ID);
+  activeLevelId = levelId;
+  levelPkg = await loader.load(LEVELS_URL, levelId);
 
   // Switch runtime view back to gameplay resolution (e.g. 240x192)
   configureRuntimeView(levelPkg.view.viewW, levelPkg.view.viewH);
@@ -546,16 +551,29 @@ function draw() {
   // Draw debug menu overlay if enabled
   debugMenu?.draw();
 
+  const isLevel1 = activeLevelId === GAME_LEVEL_ID;
+
   if (won) {
+    // N key: advance to level 2 (only from level 1, not during name entry)
+    if (isLevel1 && !game.awaitingName && kb.presses("n")) {
+      showTitle = false;
+      game = null;
+      window.game = null;
+      buildGameLevel(GAME_LEVEL_ID_2).catch((err) => {
+        console.error("Failed to build level 2:", err);
+      });
+    }
+
     winScreen?.draw({
       elapsedMs,
-      topScores: game.topScores,
-      awaitingName: game.awaitingName,
-      nameEntry: game.nameEntry,
-      nameCursor: game._nameCursor,
-      blink: game._blink,
-      lastRank: game.lastRank,
-      winScreenState: game.winScreenState,
+      topScores: game?.topScores ?? [],
+      awaitingName: game?.awaitingName,
+      nameEntry: game?.nameEntry,
+      nameCursor: game?._nameCursor,
+      blink: game?._blink,
+      lastRank: game?.lastRank,
+      winScreenState: game?.winScreenState,
+      hasNextLevel: isLevel1,
     });
   }
   if (dead) loseScreen?.draw({ elapsedMs, game });

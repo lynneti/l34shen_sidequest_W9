@@ -20,6 +20,20 @@ let playerImg, bgImg;
 let jumpSfx, musicSfx;
 let musicStarted = false;
 
+// --- DEBUG MENU ---
+// Toggle with backtick (`) key. Arrow keys navigate, Space/Enter toggles.
+let debugMenuOpen = false;
+let debugSelected = 0;
+const debugOptions = [
+  { label: "Moon Gravity", key: "moonGravity" },
+  { label: "Show Hitboxes", key: "showHitboxes" },
+];
+const debugState = {
+  moonGravity: false,
+  showHitboxes: false,
+};
+const MOON_GRAVITY = 1.6; // ~1/6th of Earth gravity
+
 let playerAnis = {
   idle: { row: 0, frames: 4, frameDelay: 10 },
   run: { row: 1, frames: 4, frameDelay: 3 },
@@ -154,6 +168,36 @@ function startMusicIfNeeded() {
 
 function keyPressed() {
   startMusicIfNeeded();
+
+  // Backtick (`) toggles debug menu
+  if (key === "`") {
+    debugMenuOpen = !debugMenuOpen;
+    return false;
+  }
+
+  // Debug menu navigation (only when open)
+  if (debugMenuOpen) {
+    if (keyCode === UP_ARROW) {
+      debugSelected =
+        (debugSelected - 1 + debugOptions.length) % debugOptions.length;
+      return false;
+    }
+    if (keyCode === DOWN_ARROW) {
+      debugSelected = (debugSelected + 1) % debugOptions.length;
+      return false;
+    }
+    if (key === " " || keyCode === ENTER) {
+      const opt = debugOptions[debugSelected];
+      debugState[opt.key] = !debugState[opt.key];
+      // Apply gravity change immediately
+      if (opt.key === "moonGravity") {
+        world.gravity.y = debugState.moonGravity ? MOON_GRAVITY : GRAVITY;
+      }
+      return false;
+    }
+    // Block all other input while menu is open
+    return false;
+  }
 }
 
 function mousePressed() {
@@ -172,12 +216,12 @@ function draw() {
   image(bgImg, 0, 0, bgImg.width, bgImg.height);
   camera.on();
 
-  // --- PLAYER CONTROLS ---
+  // --- PLAYER CONTROLS (paused while debug menu is open) ---
   // first check to see if the player is on the ground
   let grounded = sensor.overlapping(ground);
 
   // -- ATTACK INPUT --
-  if (grounded && !attacking && kb.presses("space")) {
+  if (!debugMenuOpen && grounded && !attacking && kb.presses("space")) {
     attacking = true;
     attackFrameCounter = 0;
     player.vel.x = 0;
@@ -187,7 +231,7 @@ function draw() {
   }
 
   // -- JUMP --
-  if (grounded && kb.presses("up")) {
+  if (!debugMenuOpen && grounded && kb.presses("up")) {
     player.vel.y = -4;
     if (jumpSfx) jumpSfx.play();
   }
@@ -208,7 +252,7 @@ function draw() {
   }
 
   // --- MOVEMENT ---
-  if (!attacking) {
+  if (!attacking && !debugMenuOpen) {
     player.vel.x = 0;
     if (kb.pressing("left")) {
       player.vel.x = -1.5;
@@ -217,8 +261,35 @@ function draw() {
       player.vel.x = 1.5;
       player.mirror.x = false;
     }
+  } else if (debugMenuOpen) {
+    player.vel.x = 0;
   }
 
   // --- KEEP IN VIEW ---
   player.pos.x = constrain(player.pos.x, FRAME_W / 2, VIEWW - FRAME_W / 2);
+
+  // Apply hitbox debug display
+  allSprites.debug = debugState.showHitboxes;
+
+  // --- DEBUG MENU OVERLAY ---
+  if (debugMenuOpen) {
+    camera.off();
+    push();
+    noStroke();
+    fill(0, 210);
+    rect(8, 8, 200, 22 + debugOptions.length * 20, 6);
+    textFont("monospace");
+    textSize(12);
+    fill(255, 220, 0);
+    text("DEBUG MENU  (` to close)", 16, 24);
+    for (let i = 0; i < debugOptions.length; i++) {
+      const opt = debugOptions[i];
+      fill(i === debugSelected ? "#ffff00" : "#cccccc");
+      const val = debugState[opt.key] ? "ON " : "OFF";
+      const prefix = i === debugSelected ? "> " : "  ";
+      text(prefix + opt.label + ": " + val, 16, 44 + i * 20);
+    }
+    pop();
+    camera.on();
+  }
 }
